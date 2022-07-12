@@ -1,11 +1,34 @@
 #include "core.h"
+#include <unistd.h>
+#include <fcntl.h>
 
 int main(int argc, char* argv[]) {
     bool is_iguana = (find_arg(argc, argv, "-iguana") > 0) ? true : false;
+    int fd[2], pid;
+    char* const arg[] = {(char*)"java", (char*)"-jar", (char*)"/home/aleksandra/kmtt/pathfinder/front/GLL4Graph/src/benchmark/Neo4jBenchmark.jar", (char*)"st", (char*)"1323", (char*)"2", (char*)"5", (char*)"/home/aleksandra/kmtt/pathfinder/front/GLL4Graph/data/core/", (char*)"test/resources/grammars/graph/g1/grammar.json", (char*)"core", (char*)"g1",  NULL};
+    char* const arg1[] = {(char*)"fuser", (char*)"-k", (char*)"7687/tcp", NULL};
+    char buf;
     if (is_iguana) {
+    	pipe(fd);
+    	pid = fork();
+    	if (pid == 0) {
+    		//std::cout << execv(arg1[0], arg1);
+    		std::cout << execvp(arg[0], arg);
+    		std::cout << "***";
+    		//read(, stdout, );
+    		//write(fd[1], );
+    	} else {
+       	sleep(1);
+    		while (read(fd[0], &buf, 1) > 0) {
+    			write(STDOUT_FILENO, &buf, 1);
+    		}
+    	}
+    	return 0;
+    }
+    /*if (is_iguana) {
 	std::cout << "Iguana backend is not implemented yet" << std::endl;
 	return 0;
-    }
+    }*/
     bool is_fast = (find_arg(argc, argv, "-fast") > 0) ? true : false;
     bool is_spaced_rhs =(find_arg(argc, argv, "-spaced_rhs") > 0) ? true : false;
     void* sl = dlopen((is_fast == true) ? "libfst.so" : "libslw.so", RTLD_LAZY);
