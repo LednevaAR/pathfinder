@@ -9,14 +9,112 @@
 #include <iostream>
 #include <fstream> 
 #include <limits.h>
+#include <vector>
+#include <ctime>
 using namespace std;
 
 int main(int argc, char* argv[]) {
     bool is_iguana = (find_arg(argc, argv, "-iguana") > 0) ? true : false;
+    bool is_time = (find_arg(argc, argv, "-time") > 0) ? true : false;
     int infd[2], outfd[2], pid;
     char buf;
-    char* pwd = new char[PATH_MAX];
     if (is_iguana) {
+    	char* pwd = new char[PATH_MAX];
+    	char conf[6][5];
+    	int numgr, numv, numr;
+    	ifstream file(argv[1]);
+    	file.is_open();
+    	file >> numgr;
+    	file >> numgr;
+    	string s, str[numgr];
+    	FILE* grammar = fopen("../third-party/GLL4Graph/data/grammar.json", "w");
+    	fprintf(grammar, "%s", "{\n\t\"kind\" : \"Grammar\",\n\t\"rules\" : [\n");
+    	getline(file, s);
+    	std::vector<string> words;
+    	std::vector<string> nonterm;
+    	words.push_back("\n");
+    	for (int i = 0; i < numgr; i++) {
+    		getline(file, s);
+    		std::istringstream ist(s);
+    		int sch = 0;
+    		for (std::string st; getline(ist, st, ' '); words.push_back(st)) {
+    			if (sch == 0) nonterm.push_back(st);
+    			sch += 1;
+    		}
+    		words.push_back("\n");
+    	}
+    	int count = -2;
+    	for (int i = 0; i < words.size() - 1; i++) {
+    		if ((words[i] == "\n") && (count != -2)) count = -1;
+    		if (count < 0) {
+    			if (count == -1) fprintf(grammar, "%s", "\n\t\t\t]\n\t\t},\n");
+    			fprintf(grammar, "%s", 
+    			"\t\t{\n\t\t\t\"kind\" : \"Rule\",\n\t\t\t\"head\" : {");
+    			count = 0;
+    		} else if (count == 0) {
+    			if (words[i] == "0") fprintf(grammar, "%s", "\n\t\t\t},\n\t\t\t\"body\" : [");
+    			else 
+    			fprintf(grammar, "%s%s%s%s", "\n\t\t\t\t\"kind\" : \"Nonterminal\",", 
+    			"\n\t\t\t\t\"name\" : \"", words[i].c_str(), "\"\n\t\t\t},\n\t\t\t\"body\" : [");
+    			count = 1;
+    		} else if (count > 0) {
+    			if (count != 1) fprintf(grammar, "%s", ",");
+    			int ch = 0;
+    			count += 1;
+    			for (auto& el : nonterm) {
+    				if (words[i] == el) ch = 1;
+    			}
+    			if (words[i] != "0") {
+	    			if (ch != 1) {
+	    				fprintf(grammar, "%s%s%s%s", "\n\t\t\t\t{\n\t\t\t\t\t\"kind\" : \"Terminal\",",
+	    				"\n\t\t\t\t\t\"name\" : \"", words[i].c_str(), "\",");
+	    				fprintf(grammar, "%s%s", "\n\t\t\t\t\t\"regex\" : {\n\t\t\t\t\t\t\"kind\":", 						"\"Seq\",\n\t\t\t\t\t\t\"symbols\": [\n");
+	    				for (int j = 0; j < strlen(words[i].c_str()) - 1; j++) fprintf(grammar, "%s%d%s",
+	    				 "{\t\t\t\t\t\t\t\"kind\": \"Char\", \"val\": ", (words[i].c_str())[j], "},");
+	    				fprintf(grammar, "%s%d%s", 
+	    				"\t\t\t\t\t\t\t{\"kind\": \"Char\", \"val\": ", 
+	    				(words[i].c_str())[strlen(words[i].c_str()) - 1], "}");
+	    				fprintf(grammar, "%s", "\n\t\t\t\t\t\t]\n\t\t\t\t\t}\n\t\t\t\t}");
+	    			}
+	    			else
+	    			fprintf(grammar, "%s%s%s%s", "\n\t\t\t\t{\n\t\t\t\t\t\"kind\" : \"Nonterminal\",",
+	    			 "\n\t\t\t\t\t\"name\" : \"", words[i].c_str(), "\"\n\t\t\t\t}");
+    			}
+    		}
+    	}
+    	fprintf(grammar, "%s", "\n\t\t\t]\n\t\t}\n");
+    	fprintf(grammar, "%s%s", "\t],\n\t\"startSymbol\" : {\n\t\t\"kind\" : \"Start\",\n\t\t\"name\" : \"S\",", 
+    	"\n\t\t\"nonterminal\" : {\n\t\t\t\"kind\" : \"Nonterminal\",\n\t\t\t\"name\" : \"S\"\n\t\t}\n\t}\n}");
+    	fclose(grammar);
+    	file >> numv >> numr;
+    	string from, to, type;
+    	getline(file, s);
+    	getline(file, s);
+	FILE* edges = fopen("../third-party/GLL4Graph/data/edges.csv", "a");
+	fprintf(edges, "%s\n", "name:START_ID :TYPE name:END_ID");
+    	for (int i = 0; i < numr; i++) {
+    		file >> from >> to;
+    		file.get();
+    		getline(file, type);
+    		if (type != "") fprintf(edges, "%s %s %s\n", from.c_str(), type.c_str(), to.c_str());
+    		else fprintf(edges, "%s %s %s\n", from.c_str(), "other", to.c_str());
+    	}
+    	fclose(edges);
+    	FILE* nodes = fopen("../third-party/GLL4Graph/data/nodes.csv", "w");
+    	fprintf(nodes, "%s\n", "name:ID");
+    	for (int i = 0; i < numv; i++) {
+    		fprintf(nodes, "%d\n", i);
+    	}
+    	fclose(nodes);
+    	char* numver = new char[numv];
+    	sprintf(numver, "%d", numv);
+    	file.close();
+    	ifstream config("../core/config/config");
+    	config.is_open();
+    	for (int i = 0; i < 2; i++) {
+    		config.getline(conf[i], 5, '\n');
+    	}
+    	config.close();
     	pipe(infd);
     	pipe(outfd);
     	pid = fork();
@@ -25,13 +123,59 @@ int main(int argc, char* argv[]) {
     		chdir("../third-party/GLL4Graph/");
     		getwd(pwd);
     		dup2(outfd[1], 1);
-    		char* syst = 
-    		new char[strlen("mvn exec:java -Dexec.mainClass=\"benchmark.Neo4jBenchmark\" -Dexec.args=\"st 1323 2 5 ")
-    		 + strlen("/data/core/ test/resources/grammars/graph/g1/grammar.json core g1\"") + 1 + strlen(pwd)];
-    		strcat(syst, "mvn exec:java -Dexec.mainClass=\"benchmark.Neo4jBenchmark\" -Dexec.args=\"st 1323 2 5 ");
-    		strcat(syst, pwd);
-    		strcat(syst, "/data/core/ test/resources/grammars/graph/g1/grammar.json core g1\"");
-    		system(syst);
+    		string syst;
+    		syst = "mvn exec:java -Dexec.mainClass=\"benchmark.GraphBenchmark\" -Dexec.args=\"";
+    		syst += "-d graph -gm ";
+    		syst += pwd;
+    		syst += "/data/grammar.json -gp ";
+    		syst += pwd;
+    		syst += "/data/ -gs IN_MEMORY -m ";
+    		syst += conf[1];
+    		syst += " -p ALL_PATHS -S s=ALL_PAIRS -S a=";
+    		syst += numver;
+    		syst += " -w ";
+    		syst += conf[0];
+    		syst += "\"";
+    		FILE* r = fopen("AllPaths.txt", "a");
+    		fclose(r);
+    		setenv("JAVA_HOME", "/usr/lib/jvm/jdk-15.0.2", true);
+      		system(syst.c_str());
+    		string path = pwd;
+    		path += "/results/graph_AP_SPPF_INMEM.csv";
+    		if (is_time) {
+    			int rt = 0;
+    			ifstream rs(path);
+    			rs.is_open();
+    			while (getline(rs, s))  {
+    				if (rt != 0) std::cout << "№" << rt << ": ";
+    				rt += 1;
+    				std::cout << s << endl;
+    			}
+    		}
+    		ifstream results(path);
+    		results.is_open();
+    		getline(results, s);
+    		getline(results, s);
+    		string numb;
+    		int counter = 0;
+    		for (int k = 0; k < s.size(); k++) {
+    			char nn = s[k];
+    			if (nn == ',') {
+    				counter += 1;
+    			} else if (counter == 2) {
+    				numb += nn;
+    			}
+    		}
+    		std::cout << numb << endl;
+    		results.close();
+    		path = pwd;
+    		path += "/AllPaths.txt";
+    		ifstream res(path);
+    		res.is_open();
+    		while (getline(res, s)) { 
+    			std::cout << s << endl;
+    		}
+    		res.close();
     		close(outfd[1]);
     	}
     	else {
@@ -42,6 +186,11 @@ int main(int argc, char* argv[]) {
     		close(outfd[0]);
     		wait(NULL);
     	}
+    	remove("../third-party/GLL4Graph/data/nodes.csv");
+    	remove("../third-party/GLL4Graph/data/edges.csv");
+	remove("../third-party/GLL4Graph/data/grammar.json");
+	remove("../third-party/GLL4Graph/results/graph_AP_SPPF_INMEM.csv");
+	remove("../third-party/GLL4Graph/AllPaths.txt");
 	return 0;
     }
     bool is_fast = (find_arg(argc, argv, "-fast") > 0) ? true : false;
@@ -88,6 +237,7 @@ int main(int argc, char* argv[]) {
     std::vector<std::vector<std::unordered_set<int>>>H1u = func.create_Hu(nonterminals.size(), V, P), H2u = H1u;
     std::vector<std::vector<std::vector<std::vector<int>> > > prev(V, std::vector<std::vector<std::vector<int > > > (nonterminals.size(), 
 			    std::vector<std::vector<int>>  (V, {-1, -1, -1})));
+    unsigned int start_time =  clock();
     for (int i = 0; i < E; i++)
         filling_edge_matrices(P, fin, terminal_symbol_table, W, H1v, H2v, H1u, H2u, func.add_value);
     for (auto i: eps_rules)
@@ -100,6 +250,10 @@ int main(int argc, char* argv[]) {
         baseline_cfl(is_fast, 1, q[2], q[0], H1v, H1u, left_rules, q[1], P, V, rules, prev, W, H1v, H2v, H1u, H2u, func.add_value, func.create_wv, func.create_wu);
     }
     output(is_fast, P, V, initial, prev, H1v, H1u, func.create_q);
+    unsigned int end_time = clock();
     fin.close();
+    if (is_time) {
+    	std::cout << "run_time = " << (end_time - start_time)/1000.0 << " sec" << endl;
+    }
     return 0;
 }

@@ -1,3 +1,3 @@
 #!/bin/sh
-sh deploy1.sh
-sh deploy2.sh
+sh install_jdk.sh
+sh gll4graph_deploy.sh
