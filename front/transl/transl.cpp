@@ -223,11 +223,29 @@ int main(int argc, char* argv[]) {
 	f.close();
 	file.open("main");
 	f.open(".main.dot");
-	while (getline(file, st)) f << st << endl;//добавляется содержимое dot файла функции main
+	n = 0;
+	while (getline(file, st)) {
+		if ((st.find("\"CFG ") == -1) && (st.find("Node") != -1)) {
+			n += 1;
+		}
+		if ((n == 1) && (st.find("Node") != -1)) {
+			str = st.substr(st.find("Node"), st.find_first_of(": ") - st.find("Node"));
+			f << "\tNodebeginmain [shape=record, label=\"BEGIN\"];" << endl;
+			f << "\tNodebeginmain -> " + str << endl;
+		}
+		if  ((st.find("}\"") != -1) || (st.find("}") == -1)) {
+			f << st << endl;//добавляется содержимое dot файла функции main
+			str = st;
+		}
+	}
+	str = str.substr(str.find("Node"), str.find_first_of(": ") - str.find("Node"));
+	f << "\t" + str + " -> Nodeendmain;" << endl;
+	f << "\tNodeendmain [shape=record, label=\"END\"];" << endl;
+	f << "\tNodebeginmain -> Nodeendmain;" << endl;
 	file.close();
 	f.close();
 	fstream ODOT (".main.dot", std::ofstream::app);
-	vector <string> index;
+	//vector <string> index;
 	for (int i = 0; i < l.size(); i++) {//сшивка - добавление содержимого dot файлов других функций (не main)
 		s = ".";
 		s += l[i];
@@ -238,37 +256,57 @@ int main(int argc, char* argv[]) {
 			ODOT << "\t\tlabel = \"CFG for '" + l[i] + "' function\";" << endl;
 			ODOT << "\t\tgraph[style=filled, bgcolor=white];" << endl;
 			n = 0;
+			ODOT << "\t\tNodebegin" + l[i] + " [shape=record, label=\"BEGIN\"];" << endl;
 			while (getline(file, st)) {
-				if ((st.find("\"CFG ") == -1) && (st.find("Node") != -1)) n += 1;
-				if (n == 1) {
-					index.push_back(st.substr(st.find("Node"), st.find_first_of(": ") - 1));
+				if ((st.find("\"CFG ") == -1) && (st.find("Node") != -1)) {
+					n += 1;
+				}
+				if ((n == 1) && (st.find("Node") != -1)) {
+					//index.push_back(st.substr(st.find("Node"), st.find_first_of(": ") - 1));
+					str = st.substr(st.find("Node"), st.find_first_of(": ") - st.find("Node"));
+					ODOT << "\t\tNodebegin" + l[i] + " -> " + str + ";" << endl;
 				}	
 				if ((st.find("label=\"CFG") == -1) && (st.find("digraph") == -1) && 
-				((st.find("}\"") != -1) || (st.find("}") == -1))) 
+				((st.find("}\"") != -1) || (st.find("}") == -1))) {
 					ODOT << "\t" + st << endl;
+					str = st;
+				}
 			}
+			str = str.substr(str.find("Node"), str.find_first_of(": ") - str.find("Node"));
+			ODOT << "\t\t" + str + " -> Nodeend" + l[i] + ";" << endl;
+			ODOT << "\t\tNodeend" + l[i] + " [shape=record, label=\"END\"];" << endl;
+			ODOT << "\t\tNodebegin" + l[i] + " -> Nodeend" + l[i] + ";" << endl;
 			ODOT << "\t}" << endl;
 			file.close();
 			remove(s.c_str());
-		} else index.push_back("");
+		} //else index.push_back("");
 	}
 	ODOT << "}" << endl;
 	ODOT.close();
 	file.open(".main.dot");
 	f.open("main");
 	i = 0;
+	j = 0;
+	s = "";
 	while (getline(file, st)) {//отрисовка стрелочек между функциями
-		f << st << endl;
-		f2 << st << endl;
+		if ((st.find("->") != -1) && (st.find(s) != -1) && (s != "")) {
+			f << st.substr(0, st.find_first_of("Node")) + "Nodeend" + l[j] + st.substr(st.find_first_of(" -> ")) << endl;
+			j = 0;
+			s = "";
+		} else f << st << endl;
+		//f << st << endl;
 		if (st.find("@") != -1) {
 			b = st.find_first_of("@");
 			e = st.find_first_of("( ", b);
 			str = st.substr(b + 1, e - b - 1);
-			while ((str != l[i]) && (i < index.size())) i += 1;
-			if (i != index.size()) 
-				f << st.substr(0, st.find_first_of(": ")) + " -> " + index[i] + " [style = dotted];" << endl;
+			while ((str != l[i]) && (i < l.size())) i += 1;// && (i < index.size())
+			if (i < l.size()) {
+				f << st.substr(0, st.find_first_of(": ")) + " -> Nodebegin" + l[i] + ";" << endl;//[style = dotted]
+				s = st.substr(st.find_first_of("Node"), st.find_first_of(" :") - st.find_first_of("Node") + 1);
+				j = i;
+			}
 			i = 0;
-		}	
+		}
 	}
 	file.close();
 	f.close();
@@ -278,7 +316,8 @@ int main(int argc, char* argv[]) {
 	file.close();
 	f.close();
 	
-	system(("dot -Tps " + s1 + ".main" + s0 + ".dot -o " + s1 + "outfile" + s0 + ".ps").c_str());//визуализация графа
+	system(("dot -Tpng " + s1 + ".main" + s0 + ".dot -o " + s1 + "outfile" + s0 + ".png").c_str());//визуализация графа
+	remove((s1 + "outfile" + s0 + ".ps").c_str());
 	remove((s1 + ".main.dot").c_str());
 	remove(".main.dot");
 	remove("main");

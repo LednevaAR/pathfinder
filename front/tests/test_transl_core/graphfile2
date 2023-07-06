@@ -1,29 +1,25 @@
 1
-1
-S a
+6
+S S S
+S A R
+R S B
+S 0
+A a
+B b
 
-24 23
-Node0x6f1de Node0x6f255 Node0x6f261 Node0x6f26d Node0x6f279 Node0x6f285 Node0x6f2a6 Node0x6f2b2 Node0x6f2d4 Node0x6f2e3 Node0x6f2ef Node0x6f2fb Node0x6f30e Node0x6f32f Node0x6f342 Node0x6f34e Node0x6f363 Node0x6f36f Node0x6f387 Node0x6f39f Node0x6f3b2 Node0x6f3c5 Node0x6f3e2 Node0x6f3f7 
-0 1 b
-1 2 a
-2 3 b
-3 4 b
-4 5 a
-5 6 a
-6 7 a
-7 8 a
-8 9 b
-9 10 a
-10 11 b
-11 12 a
-12 13 a
-13 16 a
-13 14 
-14 15 
-16 17 b
-17 18 
-18 19 b
-19 20 
-20 21 a
-21 22 a
-22 23 
+14 14
+Node0x19f3b30 Node0x19f42a0 Node0x19f4360 Node0x19f4420 Node0x19f4550 Node0x19f46f0 Node0x19f47b0 Node0x19f4870 Node0x19f4960 Node0x19f4a90 Node0x19f4b50 Node0x19f4c10 Nodebeginmain Nodeendmain 
+0 1 z
+1 2 z
+2 3 z
+3 4 z
+4 5 z
+5 6 z
+6 7 z
+7 8 z
+8 9 z
+9 10 z
+10 11 z
+11 12 z
+12 13 m
+0 13 z

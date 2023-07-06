@@ -1,0 +1,45 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Nodebeginmain [shape=record, label="BEGIN"];
+	Nodebeginmain -> Node0x231eee0
+	Node0x231eee0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{%0:\l  %1 = alloca [128 x %struct.point], align 16\l  br label %2\l}"];
+	Node0x231eee0 -> Node0x231fc50;
+	Node0x231fc50 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{%2:\l2:                                                \l  %3 = alloca i32, align 4\l  br label %4\l}"];
+	Node0x231fc50 -> Node0x231fdb0;
+	Node0x231fdb0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{%4:\l4:                                                \l  store i32 0, i32* %3, align 4\l  br label %5\l}"];
+	Node0x231fdb0 -> Node0x231fec0;
+	Node0x231fec0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{%5:\l5:                                                \l  br label %6\l}"];
+	Node0x231fec0 -> Node0x231ff80;
+	Node0x231ff80 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{%6:\l6:                                                \l  %7 = load i32, i32* %3, align 4\l  br label %8\l}"];
+	Node0x231ff80 -> Node0x23200b0;
+	Node0x23200b0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{%8:\l8:                                                \l  %9 = icmp slt i32 %7, 128\l  br label %10\l}"];
+	Node0x23200b0 -> Node0x231fe70;
+	Node0x231fe70 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{%10:\l10:                                               \l  br i1 %9, label %11, label %27\l|{<s0>T|<s1>F}}"];
+	Node0x231fe70:s0 -> Node0x2320210;
+	Node0x231fe70:s1 -> Node0x2320260;
+	Node0x2320210 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%11:\l11:                                               \l  %12 = load i32, i32* %3, align 4\l  br label %13\l}"];
+	Node0x2320210 -> Node0x2320410;
+	Node0x2320410 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%13:\l13:                                               \l  %14 = sext i32 %12 to i64\l  br label %15\l}"];
+	Node0x2320410 -> Node0x2320540;
+	Node0x2320540 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%15:\l15:                                               \l  %16 = getelementptr inbounds [128 x %struct.point], [128 x %struct.point]*\l... %1, i64 0, i64 %14\l  br label %17\l}"];
+	Node0x2320540 -> Node0x23206f0;
+	Node0x23206f0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%17:\l17:                                               \l  %18 = getelementptr inbounds %struct.point, %struct.point* %16, i32 0, i32 0\l  br label %19\l}"];
+	Node0x23206f0 -> Node0x2320870;
+	Node0x2320870 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%19:\l19:                                               \l  store i32 5, i32* %18, align 8\l  br label %20\l}"];
+	Node0x2320870 -> Node0x2320960;
+	Node0x2320960 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%20:\l20:                                               \l  br label %21\l}"];
+	Node0x2320960 -> Node0x2320a20;
+	Node0x2320a20 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%21:\l21:                                               \l  %22 = load i32, i32* %3, align 4\l  br label %23\l}"];
+	Node0x2320a20 -> Node0x2320b50;
+	Node0x2320b50 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%23:\l23:                                               \l  %24 = add nsw i32 %22, 1\l  br label %25\l}"];
+	Node0x2320b50 -> Node0x2320c10;
+	Node0x2320c10 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%25:\l25:                                               \l  store i32 %24, i32* %3, align 4\l  br label %26\l}"];
+	Node0x2320c10 -> Node0x2320cd0;
+	Node0x2320cd0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%26:\l26:                                               \l  br label %6, !llvm.loop !6\l}"];
+	Node0x2320cd0 -> Node0x231ff80;
+	Node0x2320260 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{%27:\l27:                                               \l  ret void\l}"];
+	Node0x2320260 -> Nodeendmain;
+	Nodeendmain [shape=record, label="END"];
+	Nodebeginmain -> Nodeendmain;
+}

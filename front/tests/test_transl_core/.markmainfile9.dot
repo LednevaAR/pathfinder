@@ -1,0 +1,49 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Nodebeginmain [shape=record, label="BEGIN"];
+	Nodebeginmain -> Node0x2217d50 [label="z"];
+	Node0x2217d50 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{%0:\l  %1 = alloca [128 x i32], align 16\l  br label %2\l}"];
+	Node0x2217d50 -> Node0x2218a80 [label="z"];
+	Node0x2218a80 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{%2:\l2:                                                \l  %3 = alloca i32, align 4\l  br label %4\l}"];
+	Node0x2218a80 -> Node0x2218be0 [label="z"];
+	Node0x2218be0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{%4:\l4:                                                \l  store i32 0, i32* %3, align 4\l  br label %5\l}"];
+	Node0x2218be0 -> Node0x2218cf0 [label="z"];
+	Node0x2218cf0 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{%5:\l5:                                                \l  br label %6\l}"];
+	Node0x2218cf0 -> Node0x2218db0 [label="z"];
+	Node0x2218db0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{%6:\l6:                                                \l  %7 = load i32, i32* %3, align 4\l  br label %8\l}"];
+	Node0x2218db0 -> Node0x2218ee0 [label="z"];
+	Node0x2218ee0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{%8:\l8:                                                \l  %9 = icmp slt i32 %7, 128\l  br label %10\l}"];
+	Node0x2218ee0 -> Node0x2218ca0 [label="c"];
+	Node0x2218ca0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{%10:\l10:                                               \l  br i1 %9, label %11, label %19\l|{<s0>T|<s1>F}}"];
+	Node0x2218ca0 -> Node0x2219040 [label="a"];
+	Node0x2218ca0 -> Node0x2219090 [label="k"];
+	Node0x2219040 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%11:\l11:                                               \l  call void @foo()\l  br label %12\l}"];
+	Node0x2219040 -> Nodebeginfoo [label="e"];
+	Nodeendfoo -> Node0x22192a0 [label="z"];
+	Node0x22192a0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%12:\l12:                                               \l  br label %13\l}"];
+	Node0x22192a0 -> Node0x2219360 [label="z"];
+	Node0x2219360 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%13:\l13:                                               \l  %14 = load i32, i32* %3, align 4\l  br label %15\l}"];
+	Node0x2219360 -> Node0x2219490 [label="z"];
+	Node0x2219490 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%15:\l15:                                               \l  %16 = add nsw i32 %14, 1\l  br label %17\l}"];
+	Node0x2219490 -> Node0x2219550 [label="z"];
+	Node0x2219550 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%17:\l17:                                               \l  store i32 %16, i32* %3, align 4\l  br label %18\l}"];
+	Node0x2219550 -> Node0x2219610 [label="z"];
+	Node0x2219610 [shape=record,color="#b70d28ff", style=filled, fillcolor="#bb1b2c70",label="{%18:\l18:                                               \l  br label %6, !llvm.loop !6\l}"];
+	Node0x2219610 -> Node0x2218db0 [label="o"];
+	Node0x2219090 [shape=record,color="#3d50c3ff", style=filled, fillcolor="#b9d0f970",label="{%19:\l19:                                               \l  ret void\l}"];
+	Node0x2219090 -> Nodeendmain [label="m"];
+	Nodeendmain [shape=record, label="END"];
+	Nodebeginmain -> Nodeendmain [label="z"];
+	subgraph cluster_foo {
+		label = "CFG for 'foo' function";
+		graph[style=filled, bgcolor=white];
+		Nodebeginfoo [shape=record, label="BEGIN"];
+	
+		Nodebeginfoo -> Node0x2217bb0 [label="z"];
+		Node0x2217bb0 [shape=record,color="#b70d28ff", style=filled, fillcolor="#b70d2870",label="{%0:\l  ret void\l}"];
+		Node0x2217bb0 -> Nodeendfoo [label="z"];
+		Nodeendfoo [shape=record, label="END"];
+		Nodebeginfoo -> Nodeendfoo [label="z"];
+	}
+}

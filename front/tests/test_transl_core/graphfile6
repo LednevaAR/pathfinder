@@ -1,0 +1,50 @@
+1
+13
+S A B
+A f
+B C D
+C 0
+C C C
+C z
+D E F
+E b
+F G H
+G i
+H I J
+I k
+J C E
+
+31 32
+Node0x848ef0 Node0x849c60 Node0x849dc0 Node0x849e80 Node0x849f40 Node0x84a070 Node0x84a330 Node0x84a3f0 Node0x84a570 Node0x84a630 Node0x84a6f0 Node0x84a7b0 Node0x84a8e0 Node0x84a9d0 Node0x84aa90 Node0x84aae0 Node0x84ac90 Node0x84adc0 Node0x84af20 Node0x84b050 Node0x84b320 Node0x84b450 Node0x84b580 Node0x84b6e0 Node0x84b7a0 Node0x84b860 Node0x84b990 Node0x84bae0 Node0x84bc30 Nodebeginmain Nodeendmain 
+0 1 z
+1 2 z
+2 3 z
+3 4 z
+4 5 z
+5 6 d
+6 7 f
+7 8 z
+8 9 f
+9 10 z
+10 11 z
+11 12 z
+12 13 z
+13 14 c
+14 15 k
+14 29 k
+15 16 z
+16 17 z
+17 18 n
+18 19 z
+19 20 z
+20 21 z
+21 22 z
+22 23 f
+23 24 z
+24 25 z
+25 26 z
+26 27 z
+27 28 z
+28 12 o
+29 30 m
+0 30 z

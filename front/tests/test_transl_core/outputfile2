@@ -1,20 +1,29 @@
-libfst.so
-1 2
-1 2 
-4 5
-4 5 
-5 6
-5 6 
-6 7
-6 7 
-7 8
-7 8 
-9 10
-9 10 
-11 12
-11 12 
-12 13
-12 13 
-13 16
-13 16 
-9
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m---------------------------< [0;36miguana:iguana[0;1m >----------------------------[m
+[[1;34mINFO[m] [1mBuilding Iguana 0.0.1-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mexec-maven-plugin:3.1.0:java[m [1m(default-cli)[m @ [36miguana[0;1m ---[m
+Benchmarking reachability for graph graph
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;32mBUILD SUCCESS[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  2.254 s
+[[1;34mINFO[m] Finished at: 2023-07-06T18:32:55+03:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+14
+(0, epsilon, 0)
+(2, epsilon, 2)
+(4, epsilon, 4)
+(6, epsilon, 6)
+(8, epsilon, 8)
+(10, epsilon, 10)
+(12, epsilon, 12)
+(1, epsilon, 1)
+(3, epsilon, 3)
+(5, epsilon, 5)
+(7, epsilon, 7)
+(9, epsilon, 9)
+(11, epsilon, 11)
+(13, epsilon, 13)

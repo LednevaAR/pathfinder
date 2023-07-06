@@ -1,0 +1,33 @@
+1
+7
+S A B
+A l
+B C D
+C g
+D E F
+E b
+F i
+
+20 21
+Node0x231eee0 Node0x231fc50 Node0x231fdb0 Node0x231fe70 Node0x231fec0 Node0x231ff80 Node0x23200b0 Node0x2320210 Node0x2320260 Node0x2320410 Node0x2320540 Node0x23206f0 Node0x2320870 Node0x2320960 Node0x2320a20 Node0x2320b50 Node0x2320c10 Node0x2320cd0 Nodebeginmain Nodeendmain 
+0 1 z
+1 2 z
+2 3 z
+3 4 z
+4 5 z
+5 6 z
+6 7 c
+7 8 k
+7 18 k
+8 9 z
+9 10 z
+10 11 j
+11 12 j
+12 13 z
+13 14 z
+14 15 z
+15 16 z
+16 17 z
+17 5 o
+18 19 m
+0 19 z
