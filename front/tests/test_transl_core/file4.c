@@ -1,20 +1,17 @@
 #include <stdio.h>
-int main(){
-  int **p, *q;
-  int *a, *b, c, d;
-
-  p = &a;
-
-  if (p) {
-    if (c) {
-      q = &c;
+int main() {
+    const int LEN = 1000;
+    int a[LEN], ind[LEN], min = LEN;
+    for (int i = 0; i < LEN; i++) {
+        a[i] += 17;
+        if (a[i] > 0) {
+            ind[i] = i;
+        } else ind[i] = LEN;
+        if (ind[i] < min) min = ind[i];
     }
-  }
-  else{
-    p = &b;
-    q = &d;
-  }
-  if (d) {
-    *p = q;
-  }
+    for (int i = min + 1; i < LEN; i++) {
+        a[i] -= 17;
+    }
+    return 0;
 }
+

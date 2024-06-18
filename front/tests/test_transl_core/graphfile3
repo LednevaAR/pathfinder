@@ -1,34 +1,75 @@
 1
-1
-S a
+29
+S A B
+A o
+B D E
+D p
+E F G
+F c
+C z
+C a
+C e
+C C C
+C 0
+G H I
+H k
+I C J
+J K L
+K r
+L M N
+M u
+N O P
+O n
+P C Q
+Q K R
+R M T
+T O U
+U C V
+V F W
+W H X
+X C Y
+Y m
 
-26 28
-Node0xbeb8b Node0xbec01 Node0xbec17 Node0xbec23 Node0xbec28 Node0xbec34 Node0xbec7e Node0xbec95 Node0xbec9a Node0xbecb5 Node0xbecd9 Node0xbed11 Node0xbee03 Node0xbee0f Node0xbee1b Node0xbee27 Node0xbee33 Node0xbee48 Node0xbee5d Node0xbee71 Node0xbee84 Node0xbee97 Node0xbeeac Node0xbeec7 Node0xbeed3 Node0xbeeeb 
-0 1 
-1 2 
-2 3 b
-3 4 b
-4 5 
-5 6 b
-6 7 
-6 11 
-7 8 
-8 12 a
-8 9 b
-9 10 
-10 4 a
-12 13 b
-13 14 a
-14 15 b
-15 16 b
-16 17 a
-16 18 a
-17 24 a
-18 19 a
-19 20 a
-20 21 a
-21 12 
-21 22 
-22 23 a
-23 24 
-24 25 a
+39 41
+Node0x1921110 Node0x1921870 Node0x19219d0 Node0x1921a90 Node0x1921b50 Node0x1921c80 Node0x1921de0 Node0x1922000 Node0x19220c0 Node0x1922220 Node0x19222e0 Node0x19223a0 Node0x19224d0 Node0x1922590 Node0x1922650 Node0x19226a0 Node0x1922850 Node0x1922980 Node0x1922ae0 Node0x1922c10 Node0x1922d90 Node0x19230f0 Node0x1923220 Node0x1923350 Node0x19234b0 Node0x19235e0 Node0x1923730 Node0x19237f0 Node0x1923840 Node0x19239f0 Node0x1923b20 Node0x1923c70 Node0x1923dc0 Node0x1924a10 Node0x1924b40 Node0x1924e40 Node0x1924f70 Nodebeginmain Nodeendmain 
+0 1 z
+1 2 z
+2 3 z
+3 4 z
+4 5 z
+5 6 z
+6 7 a
+7 8 e
+8 9 z
+9 10 z
+10 11 z
+11 12 z
+12 13 p
+13 14 c
+14 15 k
+14 33 k
+15 16 r
+16 17 u
+17 18 n
+18 19 z
+19 20 z
+20 21 z
+21 22 r
+22 23 u
+23 24 n
+24 25 z
+25 26 c
+26 27 k
+26 28 k
+27 33 z
+28 29 z
+29 30 z
+30 31 z
+31 32 z
+32 12 o
+33 34 z
+34 35 a
+35 36 e
+36 37 z
+37 38 m
+0 38 z

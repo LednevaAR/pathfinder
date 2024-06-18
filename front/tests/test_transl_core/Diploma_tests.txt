@@ -1,0 +1,7 @@
+Тесты, использующиеся в дипломе:
+Пример 1
+file1.c, grammatics1
+file2.c, grammatics2
+Пример 2
+file3.c, grammatics3
+file4.c, grammatics4

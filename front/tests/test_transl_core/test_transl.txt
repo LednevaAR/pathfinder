@@ -1,4 +1,4 @@
-file1.c
-file2.c
-file3.c
-file4.c
+file1.c grammatics1
+file2.c grammatics2
+file3.c grammatics3
+file4.c grammatics4

@@ -1,15 +1,11 @@
 #include <stdio.h>
-
-static int factorial (int n)
-{
-  return (n < 2) ? 1 : n * factorial (n - 1);
+int main() {
+    const int LEN = 1000;
+    int a[LEN];
+    for (int i = 0; i < LEN; i++) {
+        a[i] += 17;
+        if (a[i] > 0) break;
+    }
+    return 0;
 }
 
-int main (void)
-{
-  int n;
-  while (scanf ("%d", &n) == 1) {
-    printf ("%d\n", factorial (n));
-  }
-  return 0;
-}

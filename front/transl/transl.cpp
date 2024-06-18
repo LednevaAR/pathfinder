@@ -2,8 +2,23 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <map>
 #include <sstream>
 using namespace std;
+
+string node_transform(string st, int i) {
+	if (st.find("Node") != -1) {
+		string str = st.substr(st.find("Node"), st.find_first_of(": ") - st.find("Node")) + "_" + to_string(i);
+		st.replace(st.find("Node"), (st.substr(st.find("Node"), st.find_first_of(": ") - st.find("Node"))).length(), str);
+		if (st.find("-> Node") != -1) {
+			str = st.substr(st.find("-> Node") + 3, st.find_first_of(";") - st.find("-> Node") - 3) + "_" + to_string(i);
+			st.replace(st.find("-> Node") + 3, (st.substr(st.find("-> Node") + 3, st.find_first_of(";") - st.find("-> Node") - 3)).length(), str);
+		}
+		return st;
+	}
+	return st;
+}
 
 int main(int argc, char* argv[]) {
 	int n = 0;//n - показывает, строка внутри функции или снаружи
@@ -12,6 +27,7 @@ int main(int argc, char* argv[]) {
 	vector <int> num;//хранит, какие номера соответствуют какой функции в begin
 	vector <int> phi;//хранит номер тонкого блока, где есть phi
 	vector <int> phinum;//хранит, какие phi в какой функции
+	map <string, int> mp; //хранит, сколько раз вызывается каждая функция
 	int i = 0, b = 0, e = 0, pr = 0, k = 0, q = 0, c = 0, r = 0, sw = 0, u = 0, j = 0;
 	//b, e - начало и конец подстрок; i - номера блоков/операций вообще до разбиения на тонкие блоки; q - номера блоков/операций внутри каждой функции; 
 	//pr - проверяет, соответствовует ли строка началу блока до разбиения на тонкие блоки; k - показывает, первый ли это встретившийся номер в функции;
@@ -38,6 +54,7 @@ int main(int argc, char* argv[]) {
 			e = st.find_first_of("( ", b);
 			str = st.substr(b + 1, e - b - 1);
 			l.push_back(str);
+			mp.insert(make_pair(str, 0));
 			n = 1;
 			b = 0;
 			e = 0;
@@ -223,11 +240,29 @@ int main(int argc, char* argv[]) {
 	f.close();
 	file.open("main");
 	f.open(".main.dot");
-	while (getline(file, st)) f << st << endl;//добавляется содержимое dot файла функции main
+	n = 0;
+	while (getline(file, st)) {
+		if ((st.find("\"CFG ") == -1) && (st.find("Node") != -1)) {
+			n += 1;
+		}
+		if ((n == 1) && (st.find("Node") != -1)) {
+			str = st.substr(st.find("Node"), st.find_first_of(": ") - st.find("Node"));
+			f << "\tNodebeginmain [shape=record, label=\"BEGIN\"];" << endl;
+			f << "\tNodebeginmain -> " + str << endl;
+		}
+		if  ((st.find("}\"") != -1) || (st.find("}") == -1)) {
+			f << st << endl;//добавляется содержимое dot файла функции main
+			str = st;
+		}
+	}
+	str = str.substr(str.find("Node"), str.find_first_of(": ") - str.find("Node"));
+	f << "\t" + str + " -> Nodeendmain;" << endl;
+	f << "\tNodeendmain [shape=record, label=\"END\"];" << endl;
+	f << "\tNodebeginmain -> Nodeendmain;" << endl;
 	file.close();
 	f.close();
-	fstream ODOT (".main.dot", std::ofstream::app);
-	vector <string> index;
+	/*fstream ODOT (".main.dot", std::ofstream::app);
+	//vector <string> index;
 	for (int i = 0; i < l.size(); i++) {//сшивка - добавление содержимого dot файлов других функций (не main)
 		s = ".";
 		s += l[i];
@@ -238,47 +273,115 @@ int main(int argc, char* argv[]) {
 			ODOT << "\t\tlabel = \"CFG for '" + l[i] + "' function\";" << endl;
 			ODOT << "\t\tgraph[style=filled, bgcolor=white];" << endl;
 			n = 0;
+			ODOT << "\t\tNodebegin" + l[i] + " [shape=record, label=\"BEGIN\"];" << endl;
 			while (getline(file, st)) {
-				if ((st.find("\"CFG ") == -1) && (st.find("Node") != -1)) n += 1;
-				if (n == 1) {
-					index.push_back(st.substr(st.find("Node"), st.find_first_of(": ") - 1));
+				if ((st.find("\"CFG ") == -1) && (st.find("Node") != -1)) {
+					n += 1;
+				}
+				if ((n == 1) && (st.find("Node") != -1)) {
+					//index.push_back(st.substr(st.find("Node"), st.find_first_of(": ") - 1));
+					str = st.substr(st.find("Node"), st.find_first_of(": ") - st.find("Node"));
+					ODOT << "\t\tNodebegin" + l[i] + " -> " + str + ";" << endl;
 				}	
 				if ((st.find("label=\"CFG") == -1) && (st.find("digraph") == -1) && 
-				((st.find("}\"") != -1) || (st.find("}") == -1))) 
+				((st.find("}\"") != -1) || (st.find("}") == -1))) {
 					ODOT << "\t" + st << endl;
+					str = st;
+				}
 			}
+			str = str.substr(str.find("Node"), str.find_first_of(": ") - str.find("Node"));
+			ODOT << "\t\t" + str + " -> Nodeend" + l[i] + ";" << endl;
+			ODOT << "\t\tNodeend" + l[i] + " [shape=record, label=\"END\"];" << endl;
+			ODOT << "\t\tNodebegin" + l[i] + " -> Nodeend" + l[i] + ";" << endl;
 			ODOT << "\t}" << endl;
 			file.close();
-			remove(s.c_str());
-		} else index.push_back("");
+			//remove(s.c_str());
+		} //else index.push_back("");
 	}
-	ODOT << "}" << endl;
-	ODOT.close();
+	//ODOT << "}" << endl;
+	ODOT.close();*/
+
 	file.open(".main.dot");
 	f.open("main");
 	i = 0;
+	j = 0;
+	s = "";
 	while (getline(file, st)) {//отрисовка стрелочек между функциями
-		f << st << endl;
-		f2 << st << endl;
+		if ((st.find("->") != -1) && (st.find(s) != -1) && (s != "")) {
+			f << st.substr(0, st.find_first_of("Node")) + "Nodeend" + l[j] + "_" + to_string(mp[l[j]]) + st.substr(st.find_first_of(" -> ")) << endl;
+			j = 0;
+			s = "";
+		} else f << st << endl;
+		//f << st << endl;
 		if (st.find("@") != -1) {
 			b = st.find_first_of("@");
 			e = st.find_first_of("( ", b);
 			str = st.substr(b + 1, e - b - 1);
-			while ((str != l[i]) && (i < index.size())) i += 1;
-			if (i != index.size()) 
-				f << st.substr(0, st.find_first_of(": ")) + " -> " + index[i] + " [style = dotted];" << endl;
+			while ((str != l[i]) && (i < l.size())) i += 1;// && (i < index.size())
+			if (i < l.size()) {
+				mp[l[i]] += 1;
+				f << st.substr(0, st.find_first_of(": ")) + " -> Nodebegin" + l[i] + "_" + to_string(mp[l[i]]) + ";" << endl;//[style = dotted]
+				s = st.substr(st.find_first_of("Node"), st.find_first_of(" :") - st.find_first_of("Node") + 1);
+				j = i;
+			}
 			i = 0;
-		}	
+		}
 	}
 	file.close();
 	f.close();
+
+
+
+	fstream DOT ("main", std::ofstream::app);
+	for (int i = 0; i < l.size(); i++) {
+		s = ".";
+		s += l[i];
+		s += ".dot";
+		if (s.find(".main.dot") == -1) {
+			for (int j = 1; j < mp[l[i]] + 1; j++) {
+				file.open(s.c_str());
+				DOT << "\tsubgraph cluster_" + l[i] + "_" + to_string(j) + " {" << endl;
+				DOT << "\t\tlabel = \"CFG for '" + l[i] + "_" + to_string(j) + "' function\";" << endl;
+				DOT << "\t\tgraph[style=filled, bgcolor=white];" << endl;
+				n = 0;
+				DOT << "\t\tNodebegin" + l[i] + "_" + to_string(j) + " [shape=record, label=\"BEGIN\"];" << endl;
+				while (getline(file, st)) {
+					if ((st.find("\"CFG ") == -1) && (st.find("Node") != -1)) {
+						n += 1;
+					}
+					if ((n == 1) && (st.find("Node") != -1)) {
+						str = st.substr(st.find("Node"), st.find_first_of(": ") - st.find("Node"));
+						DOT << "\t\tNodebegin" + l[i] + "_" + to_string(j) + " -> " + str + "_" + to_string(j) + ";" << endl;
+					}	
+					if ((st.find("label=\"CFG") == -1) && (st.find("digraph") == -1) && 
+					((st.find("}\"") != -1) || (st.find("}") == -1))) {
+						DOT << "\t" + node_transform(st, j) << endl;
+						str = st;
+					}
+				}
+				str = str.substr(str.find("Node"), str.find_first_of(": ") - str.find("Node"));
+				DOT << "\t\t" + str + "_" + to_string(j) + " -> Nodeend" + l[i] + "_" + to_string(j) + ";" << endl;
+				DOT << "\t\tNodeend" + l[i] + "_" + to_string(j) + " [shape=record, label=\"END\"];" << endl;
+				DOT << "\t\tNodebegin" + l[i] + "_" + to_string(j) + " -> Nodeend" + l[i] + "_" + to_string(j) + ";" << endl;
+				DOT << "\t}" << endl;
+				file.close();
+				file.clear();
+				file.seekg(0);
+			}
+			remove(s.c_str());
+		}
+	}
+	DOT << "}" << endl;
+	DOT.close();
+
 	file.open("main");
 	f.open((s1 + ".main" + s0 + ".dot").c_str());//создается окончательный dot файл
 	while (getline(file, st)) f << st << endl;
 	file.close();
 	f.close();
 	
-	system(("dot -Tps " + s1 + ".main" + s0 + ".dot -o " + s1 + "outfile" + s0 + ".ps").c_str());//визуализация графа
+	system(("dot -Tpng " + s1 + ".main" + s0 + ".dot -o " + s1 + "outfile" + s0 + ".png").c_str());//визуализация графа
+	remove((s1 + "outfile" + s0 + ".ps").c_str());
 	remove((s1 + ".main.dot").c_str());
 	remove(".main.dot");
 	remove("main");
